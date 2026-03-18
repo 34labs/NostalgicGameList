@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>NoGaList Community</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <h1>Unofficial NoGaList Community</h1>
+        </header>
+
+        <div class="content">
+            <div class="form-container">
+                <h3 style="margin-bottom:15px; border-bottom:2px solid #000; padding-bottom:5px;">> WHATEVER COMMUNITY
+                    LINK
+                </h3>
+                <div class="form-group">
+                    <label>Social Media:</label>
+                    <select class="form-control" id="socialSelect">
+                        <option value="https://web.facebook.com/groups/900419248397043/posts/1201421111630187/?_rdc=1&_rdr#">Facebook</option>
+                        <option value="https://x.com/MobileNostalgia">Twitter</option>
+                        <option value="https://www.reddit.com/r/AndroidGaming/comments/18qtext/does_anyone_here_still_use_their_old_android/">Reddit</option>
+                        <option value="https://t.me/gamesnostalgia">Telegram</option>
+                    </select>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="openCommunityLink()">[ SEND DATA ]</button>
+                <button type="button" class="nav-btn" onclick="history.back()" style="float:right;">[ CANCEL ]</button>
+            </div>
+        </div>
+
+        <script>
+            function openCommunityLink() {
+                var select = document.getElementById('socialSelect');
+                var url = select.value;
+                var platform = select.options[select.selectedIndex].text;
+                
+                if (confirm("Apakah kamu ingin mengunjungi komunitas " + platform + " kami di link berikut?\n\n" + url)) {
+                    window.open(url, "_blank");
+                }
+            }
+        </script>
+
+        <div style="text-align:center; padding:10px;">
+            <a href="../index.html">&lt; BACK TO HOME</a>
+        </div>
+    </div>
+</body>
+
+</html>
