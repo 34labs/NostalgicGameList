@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NoGaList - Nostalgic Game List</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- HEADER -->
+        <header class="header">
+            <h1>NoGaList</h1>
+            <p style="font-family: 'Courier New', monospace; position: relative; top: -8px;">Nostalgic Game List</p>
+            <div style="font-size: 11px; margin-bottom: 5px; position: relative; top: -6px;">[ WAP 2.0 / GPRS CONNECTED
+                ]</div>
+
+            <div class="marquee-container">
+                <marquee scrollamount="4" behavior="scroll">
+                    *** COMMUNITY DRIVEN ARCHIVE *** SUBMIT YOUR FAVORITE CLASSICS *** HIGH SPEED DOWNLOAD ***
+                </marquee>
+            </div>
+        </header>
+
+        <!-- NAVIGATION -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" onclick="showTab('main')">Main</button>
+            <button class="nav-btn" onclick="showTab('windows')">Windows</button>
+            <button class="nav-btn" onclick="showTab('android')">Android</button>
+            <button class="nav-btn" onclick="showTab('ios')">iOS</button>
+            <button class="nav-btn" onclick="window.location.href='pages/submit.html'">[+ Submit]</button>
+        </nav>
+
+        <!-- SEARCH -->
+        <div class="search-area">
+            <form onsubmit="event.preventDefault();">
+                <span style="font-weight: bold;">FIND GAME:</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Type here...">
+                <button class="search-btn">GO</button>
+            </form>
+        </div>
+
+        <!-- STATS -->
+        <div style="padding: 5px;">
+            <div class="stats-row"
+                style="display:flex; justify-content:space-between; background:#FFFFCC; border:1px solid #999; padding:5px; font-size:11px; margin-bottom:15px;">
+                <span><b>Total Games:</b> <span id="totalGames">0</span></span>
+                <span><b>Server:</b> Online</span>
+                <span><b>Community:</b> Active</span>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            <div id="main" class="tab-content active">
+                <div class="filters">
+                    <span style="font-weight:bold; margin-right:5px;">FILTER:</span>
+                    <span class="filter-tag active" onclick="filterGames('all')">[ALL]</span>
+                    <span class="filter-tag" onclick="filterGames('rpg')">[RPG]</span>
+                    <span class="filter-tag" onclick="filterGames('action')">[ACTION]</span>
+                    <span class="filter-tag" onclick="filterGames('adventure')">[ADV]</span>
+                </div>
+                <div class="game-list" id="game-container">
+                    <!-- Games will be injected here by JS -->
+                </div>
+            </div>
+
+            <!-- Placeholders for other tabs handled by JS render logic -->
+            <div id="windows" class="tab-content">
+                <div class="game-list" id="game-container"></div> <!-- Shared container logic for simplicity -->
+            </div>
+            <!-- ... (Handled dynamically in app.js) ... -->
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>Copyright © 2003-2027 NostalgicGameList</p>
+            <p>Best viewed with <span class="blink" style="color:red; font-weight:bold;">Nokia Browser</span> 800x600
+            </p>
+            <div class="hit-counter">04821</div>
+        </footer>
+    </div>
+
+    <!-- MODAL -->
+    <div id="videoModal" class="modal">
+        <div class="modal-title-bar">
+            <span id="modalTitle">VIDEO PLAYER</span>
+            <button class="modal-close-btn" onclick="closeTrailer()">X</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="videoFrame" src=""></iframe>
+            <div style="text-align:center; margin-top:5px;">
+                <button class="nav-btn" onclick="closeTrailer()">[ STOP ]</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/games.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

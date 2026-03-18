@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nokia Game Collection - WAP Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- RESET & BASIC SETUP --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tahoma', 'Verdana', sans-serif;
+            background-color: #004080;
+            /* Classic Nokia Blue Background */
+            color: #000;
+            line-height: 1.4;
+            font-size: 13px;
+            overflow-x: hidden;
+        }
+
+        /* --- CRT SCANLINE EFFECT --- */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 999;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0000FF;
+        }
+
+        a:hover {
+            color: #FF0000;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* --- LAYOUT WRAPPER --- */
+        .wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #FFFFFF;
+            border-left: 3px solid #000;
+            border-right: 3px solid #000;
+            min-height: 100vh;
+            box-shadow: 10px 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            background: #124191;
+            /* Nokia Dark Blue */
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 4px solid #000;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        .marquee-container {
+            background: #FFF;
+            color: #000;
+            border: 2px inset #CCC;
+            padding: 2px;
+            font-weight: bold;
+        }
+
+        /* --- NAVIGATION (WAP Style) --- */
+        .nav-bar {
+            background: #C0C0C0;
+            /* Windows 95 Grey */
+            border-top: 2px solid #FFF;
+            border-bottom: 2px solid #808080;
+            padding: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            background: #C0C0C0;
+            border: 2px outset #FFF;
+            padding: 4px 10px;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #000;
+            text-transform: uppercase;
+        }
+
+        .nav-btn:active,
+        .nav-btn.active {
+            border: 2px inset #808080;
+            background: #E0E0E0;
+            color: #800000;
+            text-decoration: none;
+        }
+
+        /* --- SEARCH --- */
+        .search-area {
+            background: #EFEFEF;
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px dashed #999;
+        }
+
+        .search-input {
+            border: 2px inset #CCC;
+            padding: 3px;
+            font-family: 'Courier New', monospace;
+            width: 70%;
+        }
+
+        .search-btn {
+            border: 2px outset #FFF;
+            background: #C0C0C0;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 3px 8px;
+        }
+
+        /* --- CONTENT AREA --- */
+        .content {
+            padding: 10px;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36zwjjgzhhYWGMYAEYB8RmROaABADeOQ8CXl/xfgAAAABJRU5ErkJggg==');
+            /* Tiny grid pattern */
+        }
+
+        /* --- STATS --- */
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            background: #FFFFCC;
+            border: 1px solid #999;
+            padding: 5px;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+
+        /* --- FILTER TAGS (Retro Pills) --- */
+        .filters {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .filter-tag {
+            display: inline-block;
+            border: 1px solid #000;
+            background: #FFF;
+            padding: 2px 6px;
+            margin: 2px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .filter-tag.active {
+            background: #000;
+            color: #FFF;
+        }
+
+        /* --- GAME LIST (Card -> Row Style) --- */
+        .game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .game-card {
+            background: #FFF;
+            border: 2px solid #000;
+            padding: 5px;
+            position: relative;
+        }
+
+        .game-card::before {
+            content: "NEW!";
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            font-size: 10px;
+            padding: 2px 5px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            box-shadow: 1px 1px 0 #000;
+            display: none;
+            /* Hidden by default, can be toggled */
+        }
+
+        .game-header {
+            background: #124191;
+            color: white;
+            padding: 2px 5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .game-header i {
+            margin-right: 5px;
+            color: #FFFF00;
+        }
+
+        .game-layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .game-thumb {
+            width: 120px;
+            border: 2px inset #CCC;
+            cursor: pointer;
+        }
+
+        .game-thumb img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .game-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .platform-links {
+            margin-top: 5px;
+            border-top: 1px dotted #CCC;
+            padding-top: 5px;
+            font-size: 12px;
+        }
+
+        .platform-item {
+            margin-bottom: 3px;
+            background: #F0F0F0;
+            padding: 2px;
+            border: 1px solid #CCC;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #EEE;
+            border: 1px outset #FFF;
+            color: blue;
+            padding: 1px 5px;
+            font-size: 11px;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .download-btn:hover {
+            background: #CCC;
+            border-style: inset;
+            color: red;
+            text-decoration: none;
+        }
+
+        /* --- TAB CONTENT --- */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* --- MODAL (Windows 95 Style) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            border: 2px outset #FFF;
+            background: #C0C0C0;
+            box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.5);
+            font-family: 'Tahoma', sans-serif;
+        }
+
+        .modal-title-bar {
+            background: #000080;
+            color: white;
+            padding: 3px 5px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close-btn {
+            background: #C0C0C0;
+            border: 1px outset #FFF;
+            width: 16px;
+            height: 16px;
+            line-height: 14px;
+            text-align: center;
+            font-size: 10px;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            padding: 10px;
+            background: #FFF;
+            border: 2px inset #CCC;
+        }
+
+        .modal-body iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+            background: #000;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            background: #EFEFEF;
+            border-top: 2px solid #999;
+            padding: 10px;
+            text-align: center;
+            font-size: 11px;
+            margin-top: 20px;
+        }
+
+        .hit-counter {
+            background: #000;
+            color: red;
+            font-family: 'Courier New', monospace;
+            padding: 2px 5px;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-top: 5px;
+            border: 2px inset #555;
+        }
+
+        /* --- UTILS --- */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Blinking text for extra retro feel */
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            .game-layout {
+                flex-direction: column;
+            }
+
+            .game-thumb {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
+
+            .modal {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- HEADER -->
+        <header class="header">
+            <h1>NGL</h1>
+            <p style="font-family: 'Courier New', monospace; position: relative; top: -8px;">Nostalgic Game List</p>
+            <div style="font-size: 11px; margin-bottom: 5px; position: relative; top: -6px;">[ WAP 2.0 / GPRS CONNECTED
+                ]</div>
+
+            <div class="marquee-container">
+                <marquee scrollamount="4" behavior="scroll">
+                    *** WELCOME TO THE GAME ZONE *** DOWNLOAD BEST CLASSIC GAMES *** NO SUBSCRIPTION NEEDED *** HIGH
+                    SPEED DOWNLOAD ***
+                </marquee>
+            </div>
+        </header>
+
+        <!-- NAVIGATION -->
+        <nav class="nav-bar">
+            <button class="nav-btn active" onclick="showTab('main')">Main</button>
+            <button class="nav-btn" onclick="showTab('windows')">Windows</button>
+            <button class="nav-btn" onclick="showTab('android')">Android</button>
+            <button class="nav-btn" onclick="showTab('ios')">iOS</button>
+        </nav>
+
+        <!-- SEARCH -->
+        <div class="search-area">
+            <form onsubmit="event.preventDefault();">
+                <span style="font-weight: bold;">FIND GAME:</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Type here...">
+                <button class="search-btn">GO</button>
+            </form>
+        </div>
+
+        <!-- STATS -->
+        <div style="padding: 5px;">
+            <div class="stats-row">
+                <span><b>Total Games:</b> 14</span>
+                <span><b>Server:</b> Online</span>
+                <span><b>Users:</b> 4,203</span>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="content">
+
+            <!-- TABS -->
+            <div id="main" class="tab-content active">
+                <div class="filters">
+                    <span style="font-weight:bold; margin-right:5px;">FILTER:</span>
+                    <span class="filter-tag active" onclick="filterGames('all')">[ALL]</span>
+                    <span class="filter-tag" onclick="filterGames('rpg')">[RPG]</span>
+                    <span class="filter-tag" onclick="filterGames('action')">[ACTION]</span>
+                    <span class="filter-tag" onclick="filterGames('adventure')">[ADV]</span>
+                </div>
+
+                <div class="game-list" id="gameListMain">
+                    <!-- Game 1 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Cat Quest</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Cat Quest', 'https://www.youtube.com/embed/asDUOd5IZH0')">
+                                <img src="https://img.youtube.com/vi/asDUOd5IZH0/default.jpg" alt="Cat Quest">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Real-time open world RPG. Play as a dragon cat!</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.thegentlebros.catquest"
+                                            class="download-btn" target="_blank">Download .SIS</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/cat-quest/id1148385289"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 2 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Vampire's Fall Origins</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Vampire\'s Fall', 'https://www.youtube.com/embed/uQ4oCV0mCek')">
+                                <img src="https://img.youtube.com/vi/uQ4oCV0mCek/default.jpg" alt="Vampire">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Classic turn-based RPG with a dark atmosphere.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.earlymorningstudio.vampiresfall2"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/vampires-fall-origins-rpg/id1345626129"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 3 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">The Shadow Sun</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Shadow Sun', 'https://www.youtube.com/embed/LyfmC_E_dLk')">
+                                <img src="https://img.youtube.com/vi/LyfmC_E_dLk/default.jpg" alt="Shadow Sun">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Epic 3D RPG set in a dangerous fantasy world.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.ossianstudios.theshadowsun"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/the-shadow-sun/id396269166"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 4 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Earth & Legends</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Earth & Legends', 'https://www.youtube.com/embed/dhSlGm0QZZo')">
+                                <img src="https://img.youtube.com/vi/dhSlGm0QZZo/default.jpg" alt="Earth & Legends">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>3D Fantasy RPG with day/night cycles.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.dvidearts.earthandlegend"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/earth-and-legend/id462371700"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 5 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Exiled Kingdoms</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Exiled Kingdoms', 'https://www.youtube.com/embed/pGlfQMY1Y3w')">
+                                <img src="https://img.youtube.com/vi/pGlfQMY1Y3w/default.jpg" alt="Exiled Kingdoms">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Old school isometric RPG. Very addictive!</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=net.fdgames.ek.android"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/my/app/exiled-kingdoms-rpg/id1091313127"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 6 -->
+                    <div class="game-card" data-category="action">
+                        <div class="game-header">Beast Quest</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Beast Quest', 'https://www.youtube.com/embed/R71amTv7P2c')">
+                                <img src="https://img.youtube.com/vi/R71amTv7P2c/default.jpg" alt="Beast Quest">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Open-world action RPG. Hunt dangerous beasts!</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.animocabrands.global.beastquest"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/beast-quest/id1355573467"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 7 -->
+                    <div class="game-card" data-category="adventure">
+                        <div class="game-header">Portal Knights</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Portal Knights', 'https://www.youtube.com/embed/7hIoOdK5RVs')">
+                                <img src="https://img.youtube.com/vi/7hIoOdK5RVs/default.jpg" alt="Portal Knights">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Sandbox action RPG. Craft, build, fight!</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.keengames.portalknights"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/portal-knights/id1246254967"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 8 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">9th Dawn II</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('9th Dawn II', 'https://www.youtube.com/embed/myoTTuS6JLU')">
+                                <img src="https://img.youtube.com/vi/myoTTuS6JLU/default.jpg" alt="9th Dawn II">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Huge open world RPG with retro graphics.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.valorware.ninthdawnii"
+                                            class="download-btn" target="_blank">Demo</a>
+                                        <a href="https://play.google.com/store/apps/details?id=com.valorware.ninthdawniifull"
+                                            class="download-btn" target="_blank">Full</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/9th-dawn-ii/id1076717689"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 9 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Angel Sword</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Angel Sword', 'https://www.youtube.com/embed/6VHS_jiJcuo')">
+                                <img src="https://img.youtube.com/vi/6VHS_jiJcuo/default.jpg" alt="Angel Sword">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>3D Action RPG with customizable weapons.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.dvidearts.angelsword"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/angel-sword-3d-rpg/id996347110"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 10 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Evocreo</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Evocreo', 'https://www.youtube.com/embed/BASw7bLZURo')">
+                                <img src="https://img.youtube.com/vi/BASw7bLZURo/default.jpg" alt="Evocreo">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Pokemon-like monster catching RPG.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=ilmfinity.evocreo.lite.android"
+                                            class="download-btn" target="_blank">Lite</a>
+                                        <a href="https://play.google.com/store/apps/details?id=ilmfinity.evocreo.main.android"
+                                            class="download-btn" target="_blank">Full</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/evocreo-pocket-monster-game/id918997182"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 11 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Ravensword Shadowlands</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Ravensword', 'https://www.youtube.com/embed/pohAYqoMefw')">
+                                <img src="https://img.youtube.com/vi/pohAYqoMefw/default.jpg" alt="Ravensword">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Skyrim-like RPG for mobile devices.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.crescentmoongames.ravensword2"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/ravensword-shadowlands/id566839331"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 12 -->
+                    <div class="game-card" data-category="adventure">
+                        <div class="game-header">Stardew Valley</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Stardew Valley', 'https://www.youtube.com/embed/ot7uXNQskhs')">
+                                <img src="https://img.youtube.com/vi/ot7uXNQskhs/default.jpg" alt="Stardew">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Farming simulation RPG. Very relaxing.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.chucklefish.stardewvalley"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/stardew-valley/id1406710800"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 13 -->
+                    <div class="game-card" data-category="action">
+                        <div class="game-header">Titan Quest</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Titan Quest', 'https://www.youtube.com/embed/8qFM8v8QZf0')">
+                                <img src="https://img.youtube.com/vi/8qFM8v8QZf0/default.jpg" alt="Titan Quest">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Mythology-based Hack 'n' Slash RPG.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.dotemu.titanquest"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/titan-quest-legendary-edition/id1537060891"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Game 14 -->
+                    <div class="game-card" data-category="rpg">
+                        <div class="game-header">Aralon Forge & Flame</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Aralon', 'https://www.youtube.com/embed/iKWCM8OFxzw')">
+                                <img src="https://img.youtube.com/vi/iKWCM8OFxzw/default.jpg" alt="Aralon">
+                                <div style="text-align:center; background:#000; color:#fff; font-size:10px;">[PLAY]
+                                </div>
+                            </div>
+                            <div class="game-info">
+                                <p>Epic 3D RPG. Swords, magic, and dragons.</p>
+                                <div class="platform-links">
+                                    <div class="platform-item">
+                                        <b>Android:</b>
+                                        <a href="https://play.google.com/store/apps/details?id=com.crescentmoongames.aralon2"
+                                            class="download-btn" target="_blank">Download</a>
+                                    </div>
+                                    <div class="platform-item">
+                                        <b>iOS:</b>
+                                        <a href="https://apps.apple.com/us/app/aralon-forge-and-flame/id996136866"
+                                            class="download-btn" target="_blank">AppStore</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WINDOWS TAB -->
+            <div id="windows" class="tab-content">
+                <h3 style="background:#000080; color:white; padding:5px; border:2px inset white;">> WINDOWS CLASSICS
+                </h3>
+                <div class="game-list">
+                    <div class="game-card">
+                        <div class="game-header">Planescape: Torment</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Planescape', 'https://www.youtube.com/embed/G2wXLCIpFRg')">
+                                <img src="https://img.youtube.com/vi/G2wXLCIpFRg/default.jpg" alt="Planescape">
+                            </div>
+                            <div class="game-info">
+                                <p>One of the best RPGs ever written.</p>
+                                <div class="platform-links">
+                                    <a href="https://store.steampowered.com/app/466300/Planescape_Torment_Enhanced_Edition/"
+                                        class="download-btn" target="_blank">Steam</a>
+                                    <a href="https://www.gog.com/game/planescape_torment_enhanced_edition"
+                                        class="download-btn" target="_blank">GOG</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">Arcanum</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Arcanum', 'https://www.youtube.com/embed/OWemoWxqElE')">
+                                <img src="https://img.youtube.com/vi/OWemoWxqElE/default.jpg" alt="Arcanum">
+                            </div>
+                            <div class="game-info">
+                                <p>Steampunk vs Magic.</p>
+                                <div class="platform-links">
+                                    <a href="https://www.gog.com/game/arcanum_of_steamworks_and_magick_obscura"
+                                        class="download-btn" target="_blank">GOG</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">System Shock 2</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('SS2', 'https://www.youtube.com/embed/a3__6BknDHc')">
+                                <img src="https://img.youtube.com/vi/a3__6BknDHc/default.jpg" alt="SS2">
+                            </div>
+                            <div class="game-info">
+                                <p>Horror FPS/RPG masterpiece.</p>
+                                <div class="platform-links">
+                                    <a href="https://store.steampowered.com/app/238210/System_Shock_2/"
+                                        class="download-btn" target="_blank">Steam</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">Vampire: Bloodlines</div>
+                        <div class="game-layout">
+                            <div class="game-thumb"
+                                onclick="openTrailer('Bloodlines', 'https://www.youtube.com/embed/yRNZWZ9Y0L0')">
+                                <img src="https://img.youtube.com/vi/yRNZWZ9Y0L0/default.jpg" alt="Bloodlines">
+                            </div>
+                            <div class="game-info">
+                                <p>World of Darkness RPG.</p>
+                                <div class="platform-links">
+                                    <a href="https://store.steampowered.com/app/2600/Vampire_The_Masquerade_Bloodlines/"
+                                        class="download-btn" target="_blank">Steam</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANDROID TAB -->
+            <div id="android" class="tab-content">
+                <h3 style="background:#000080; color:white; padding:5px; border:2px inset white;">> ANDROID HIDDEN GEMS
+                </h3>
+                <div class="game-list">
+                    <div class="game-card">
+                        <div class="game-header">Caves of Lore</div>
+                        <div class="game-info">
+                            <p>Grid-based tactical RPG.</p>
+                            <a href="https://play.google.com/store/apps/details?id=com.cavesoflore.android"
+                                class="download-btn" target="_blank">Play Store</a>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">Battle for Wesnoth</div>
+                        <div class="game-info">
+                            <p>Open source turn-based strategy.</p>
+                            <a href="https://play.google.com/store/apps/details?id=org.wesnoth.wesnoth"
+                                class="download-btn" target="_blank">Play Store</a>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">Pixel Dungeon</div>
+                        <div class="game-info">
+                            <p>Classic roguelike.</p>
+                            <a href="https://play.google.com/store/apps/details?id=com.watabou.pixeldungeon"
+                                class="download-btn" target="_blank">Original</a>
+                            <a href="https://play.google.com/store/apps/details?id=com.shatteredpixel.shatteredpixeldungeon"
+                                class="download-btn" target="_blank">Shattered</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IOS TAB -->
+            <div id="ios" class="tab-content">
+                <h3 style="background:#000080; color:white; padding:5px; border:2px inset white;">> IOS TREASURES</h3>
+                <div class="game-list">
+                    <div class="game-card">
+                        <div class="game-header">Papers, Please</div>
+                        <div class="game-info">
+                            <p>Border control simulator.</p>
+                            <a href="https://apps.apple.com/us/app/papers-please/id801209038" class="download-btn"
+                                target="_blank">App Store</a>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">Slay the Spire</div>
+                        <div class="game-info">
+                            <p>Deck-building roguelike.</p>
+                            <a href="https://apps.apple.com/us/app/slay-the-spire/id1375371997" class="download-btn"
+                                target="_blank">App Store</a>
+                        </div>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-header">Out There</div>
+                        <div class="game-info">
+                            <p>Lonely space exploration.</p>
+                            <a href="https://apps.apple.com/us/app/out-there/id711687333" class="download-btn"
+                                target="_blank">App Store</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p>Copyright © 2003-2027 NostalgicGameList</p>
+            <p>Best viewed with <span class="blink" style="color:red; font-weight:bold;">Nokia Browser</span> 800x600
+            </p>
+            <div class="hit-counter">04821</div>
+            <div style="margin-top:10px;">
+                <i class="fab fa-html5"></i> WAP 2.0 VALID
+            </div>
+        </footer>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div id="videoModal" class="modal">
+        <div class="modal-title-bar">
+            <span id="modalTitle">VIDEO PLAYER</span>
+            <button class="modal-close-btn" onclick="closeTrailer()">X</button>
+        </div>
+        <div class="modal-body">
+            <iframe id="videoFrame" src=""></iframe>
+            <div style="text-align:center; margin-top:5px;">
+                <button class="nav-btn" onclick="closeTrailer()">[ STOP ]</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- TABS LOGIC ---
+        function showTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Show target
+            document.getElementById(tabId).classList.add('active');
+
+            // Update buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Find which button was clicked (based on text content approx or onclick attr)
+            // Since we passed the ID, we iterate to find the matching onclick
+            buttons.forEach(btn => {
+                if (btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // --- FILTER LOGIC ---
+        function filterGames(category) {
+            const cards = document.querySelectorAll('#gameListMain .game-card');
+            const tags = document.querySelectorAll('.filter-tag');
+
+            tags.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // --- SEARCH LOGIC ---
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const term = e.target.value.toLowerCase();
+            const allCards = document.querySelectorAll('.game-card'); // Search across all tabs? Or just visible? Let's do all visible mostly, but here we search current active tab structure logic is simpler if we just grab all
+
+            // For better UX in this single page, let's search all tabs and switch to the one with results?
+            // Simpler: Just search currently active tab content
+            const activeTabContent = document.querySelector('.tab-content.active');
+            const cards = activeTabContent.querySelectorAll('.game-card');
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // --- MODAL LOGIC ---
+        function openTrailer(title, url) {
+            document.getElementById('modalTitle').innerText = title.toUpperCase();
+            document.getElementById('videoFrame').src = url + "?autoplay=1"; // Autoplay for retro feel
+            document.getElementById('videoModal').style.display = 'block';
+        }
+
+        function closeTrailer() {
+            document.getElementById('videoFrame').src = "";
+            document.getElementById('videoModal').style.display = 'none';
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('videoModal');
+            if (event.target == modal) {
+                closeTrailer();
+            }
+        }
+    </script>
+</body>
+
+</html>
